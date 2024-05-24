@@ -1,0 +1,94 @@
+# Want a recursive program that counts down to 0
+#
+# recCount(n):
+#    if(n<1):
+#       return
+#    else:
+#       print(n)
+#       recCount(n-1)
+
+############3
+# r15 is always always always the base address of the currently executing stack
+#     frame
+
+0 jumpn 8
+
+########################################################
+# recCount(n)
+#
+# frame shape...
+#  n        -2
+#  instrptr -1
+#  baseptr  -0
+#
+# :recCount:
+### We got to here from main ok!!! This is cause for celebration!!!
+# store the instrptr, in r1
+1 copy   r14 r15
+2 addn   r14 -1
+3 storer r1 r14
+### Stack frame is ready
+### recCount logic here
+
+# Return
+## Read the instrptr into a register
+4 copy r14 r15
+5 addn r14 -1
+6 loadr r1 r14
+## Jump there
+7 jumpr r1
+
+########################################################
+# main
+# Main stack frames take 3 memory locations
+# n       -2
+# retptr  -1
+# baseptr -0
+# r1 <- the number the user gave (only valid until recCount is called)
+# :main:
+# setup whatever I need for the main stackframe... could but symmetry is nice
+8 setn r15 50 # <-- !!!WARN!!! 50 may be too low... We'll see
+# Set main's base ptr
+9 storer r0 r15
+# Set main's return ptr
+10 copy r14 r15
+11 addn r14 -1
+12 storer r0 r14
+
+# read in an n
+13 read r1
+
+# r1 has our value... but we need to put it into the memory of n
+# Store the n in the right place
+14 copy r14 r15 # copy the address of the base into r14
+15 addn r14 -2  # compute the address for n using the offset
+16 storer r1 r14 # actually store the n at that memory location
+
+# call recCount(n) <-- what does this mean in terms of memory?
+# r15 has our value... but we need to put it into the memory of the callee's
+#     baseptr
+# caller = main :: callee = recCount
+17 copy r14 r15
+18 addn r14 -3
+19 storer r15 r14
+
+# pass the n into the callee's stackframe
+## load n into a register so that we can use it
+20 copy r14 r15  # copy the address of the base into r14
+21 addn r14 -2   # compute the address for n using the offset
+22 loadr r1 r14 # load memory addr r14 into r1 ==> r1 holds the value of n right now
+
+## store that register into the right place (n in the callee)
+23 copy   r14 r15
+24 addn   r14 -5
+25 storer r1 r14
+
+# Actually start the recCount function
+26 addn r15 -3
+27 calln r1 1 # r1 isn't n anymore :(... reg is reused for a instrptr
+
+# recCount returned, yay!
+28 addn r15 3 # get the stack pointer back to the right place
+
+# declare victory
+29 halt

@@ -1,0 +1,27 @@
+# Want a program that draws a line diagonal in the memory visualizer
+#  Attempt 1 - Fully "unrolled" exection... 16 writes plus a couple lines
+#              of extra stuff
+
+# Make a value to store
+0 setn r1 12
+# Write to FF
+1 storen r1 0xFF
+2 storen r1 0xEE
+3 storen r1 0xDD
+4 storen r1 0xCC
+5 storen r1 0xBB
+6 storen r1 0xAA
+7 storen r1 0x99
+8 storen r1 0x88
+9 storen r1 0x77
+10 storen r1 0x66
+11 storen r1 0x55
+12 storen r1 0x44
+13 storen r1 0x33
+14 storen r1 0x22
+15 storen r1 0x11
+16 jumpn 18
+17 nop
+18 storen r1 0x00
+# Declare victory!
+19 halt

@@ -1,0 +1,55 @@
+# Want a recursive program that counts down to 0
+#
+# recCount(n):
+#    if(n<1):
+#       return
+#    else:
+#       print(n)
+#       recCount(n-1)
+
+############3
+# r15 is always always always the base address of the currently executing stack
+#     frame
+
+jumpn :main:
+
+########################################################
+# recCount(n)
+#
+# frame shape...
+#  n        -2
+#  instrptr -1
+#  baseptr  -0
+#
+:recCount:
+
+########################################################
+# main
+# Main stack frames take 3 memory locations
+# r1 <- the number the user gave (only valid until recCount is called)
+:main:
+# setup whatever I need for the main stackframe... could but symmetry is nice
+setn r15 50
+# Set main's base ptr
+storer r0 r15
+# Set main's return ptr
+copy r14 r15
+addn r14 -1
+storer r0 r14
+
+# read in an n
+read r1
+
+# Store the n in the right place
+copy r14 r15
+addn r14 -2
+storer r1 r14
+
+# call recCount(n) <-- what does this mean in terms of memory?
+# Setup the stackframe so that recCount can start
+#    space for n <-- value? r1 , address?  r15 - 5
+#    baseptr     <-- value? r15 , address? r15 - 3
+#    returnptr   <-- value? ...we can't always know..., address ?? 
+
+# declare victory
+halt

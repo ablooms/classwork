@@ -1,0 +1,10 @@
+c Jerry
+d David
+d Carlos
+c Keith
+c Tom
+d Tiger
+d Alice
+c Elizabeth
+d Angela
+c Barbara

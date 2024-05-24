@@ -1,0 +1,24 @@
+# Want a program that draws a line diagonal in the memory visualizer
+#  Attempt 2 - Use a loop... will it be shorter? I don't know.
+
+# Initial Condition, set some reg to 0xFF
+#0 setn r1 0xFF # Huh... this doesn't work... r1 = 0xFFFF
+#                 want r1 = 0x00FF
+setn r1 127
+addn r1 127
+addn r1 1
+
+setn r2 12
+# <-- 4 to get to the loop body
+# Progress, write 12 to the reg addr and change the value in the reg
+:top_of_loop:
+storer r2 r1
+addn r1 -17
+# Check if we've executed 16 times, if we have stop...check is reg 0x00
+jnezn r1 :top_of_loop:
+# <-- 3 each time the loop executes
+storen r2 0
+
+# Declare victory
+halt
+# <-- 2 at the end
